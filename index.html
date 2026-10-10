@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>0→Shipped — Resume Parser</title>
+  <meta name="description" content="Upload a PDF resume and get a score, plus the skills you have and the ones you're missing." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="logo" href="#">0→<span>Shipped</span></a>
+      <nav class="nav-links">
+        <a href="#how">How it works</a>
+      </nav>
+      <a class="btn btn-small" href="#upload">Upload resume</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <p class="eyebrow">0 to shipped · resume parser</p>
+      <h1>Your resume, <span class="accent">scored</span> in seconds.</h1>
+      <p class="sub">Drop in a PDF and see your score, the skills recruiters can find, and the ones you're missing. Runs entirely in your browser.</p>
+
+      <div class="upload-card" id="upload">
+        <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload your resume PDF">
+          <div id="dz-idle">
+            <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 16V4" />
+              <path d="m6 9 6-6 6 6" />
+              <path d="M4 20h16" />
+            </svg>
+            <p class="dz-title">Drag &amp; drop your resume here</p>
+            <p class="dz-sub">or <span class="dz-link">browse files</span> — PDF only</p>
+          </div>
+          <div id="dz-busy" class="hidden">
+            <div class="spinner"></div>
+            <p class="dz-title">Analyzing your resume…</p>
+          </div>
+          <p class="dz-error hidden" id="dz-error">That doesn't look like a PDF — please choose a .pdf file.</p>
+        </div>
+        <p class="upload-note">Demo build: your file never leaves the browser, and results are simulated.</p>
+      </div>
+    </section>
+
+    <section class="results hidden" id="results" aria-live="polite">
+      <div class="results-head">
+        <h2>Analysis complete</h2>
+        <p class="results-file" id="results-file"></p>
+      </div>
+
+      <div class="results-grid">
+        <div class="score-card">
+          <div class="ring">
+            <svg viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="ring-bg" cx="60" cy="60" r="54"></circle>
+              <circle class="ring-fg" id="ring-fg" cx="60" cy="60" r="54"></circle>
+            </svg>
+            <div class="ring-label">
+              <span id="score-num">0</span>
+              <small>/ 100</small>
+            </div>
+          </div>
+          <p class="tier" id="score-tier"></p>
+          <p class="summary" id="score-summary"></p>
+          <button class="btn btn-ghost" id="reset-btn">Analyze another resume</button>
+        </div>
+
+        <div class="skills-cards">
+          <div class="skill-card">
+            <h3>Skills found <span class="count" id="present-count"></span></h3>
+            <ul class="chips" id="present-list"></ul>
+          </div>
+          <div class="skill-card">
+            <h3>Skills missing <span class="count" id="missing-count"></span></h3>
+            <ul class="chips" id="missing-list"></ul>
+            <p class="hint">Adding these keywords is the fastest way to lift the score.</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="demo-note">Design mock — the score and skill lists are generated locally. A real parser backend will slot in behind this page.</p>
+    </section>
+
+    <section class="how" id="how">
+      <h2>How it works</h2>
+      <div class="steps">
+        <div class="step">
+          <p class="step-num">01</p>
+          <h3>Upload a PDF</h3>
+          <p>Drag your resume into the box. Parsing starts the moment it lands.</p>
+        </div>
+        <div class="step">
+          <p class="step-num">02</p>
+          <h3>We scan for skills</h3>
+          <p>The parser checks your resume against the skills recruiters actually search for.</p>
+        </div>
+        <div class="step">
+          <p class="step-num">03</p>
+          <h3>Get your score</h3>
+          <p>See what's present, what's missing, and exactly what to add next.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <span>0→Shipped — resume parser design mock</span>
+      <span>HTML · CSS · JS · no backend</span>
+    </div>
+  </footer>
+
+  <input type="file" id="file-input" accept=".pdf,application/pdf" class="hidden" />
+  <script src="app.js"></script>
+</body>
+</html>
