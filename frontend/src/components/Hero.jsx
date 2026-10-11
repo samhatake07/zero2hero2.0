@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { simulateParse } from "../../../src/lib/mock.js";
+import { analyzeResume } from "../lib/mock.js";
 
 // The hero section: headline plus the upload card. In the old page this was
 // getElementById wiring in app.js plus sections hidden by a .hidden class;
@@ -19,7 +19,7 @@ export default function Hero({ onAnalysis }) {
       return;
     }
     setBusy(true);
-    simulateParse(file.name).then((result) => {
+    analyzeResume(file.name).then((result) => {
       setBusy(false);
       onAnalysis(result);
       if (fileInputRef.current) fileInputRef.current.value = ""; // allow re-uploading the same file

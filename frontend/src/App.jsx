@@ -2,11 +2,11 @@
 // none of the markup changed, so every CSS selector still matches.
 
 import { useEffect, useState } from "react";
-import Header from "../../src/components/Header.jsx";
-import Hero from "../../src/components/Hero.jsx";
-import Results from "../../src/components/Results.jsx";
-import HowItWorks from "../../src/components/HowItWorks.jsx";
-import Footer from "../../src/components/Footer.jsx";
+import Header from "./components/Header.jsx";
+import Hero from "./components/Hero.jsx";
+import Results from "./components/Results.jsx";
+import HowItWorks from "./components/HowItWorks.jsx";
+import Footer from "./components/Footer.jsx";
 
 export default function App() {
   // The one piece of app-wide state: the last analysis. Hero's upload flow

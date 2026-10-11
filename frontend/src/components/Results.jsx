@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import useCountUp from "../../../src/hooks/useCountUp.js";
-import { TIERS } from "../../../src/lib/mock.js";
+import useCountUp from "../hooks/useCountUp.js";
+import { TIERS } from "../lib/mock.js";
 
 const RING_LENGTH = 2 * Math.PI * 54; // circumference of the r=54 score ring
 

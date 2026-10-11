@@ -1,5 +1,11 @@
-// Mock analysis for the design mock. No backend: a "parse" is simulated with a
-// timer + deterministic mock data, so the same file always gets the same score.
+// Analysis entry point for the UI. The real path is POST /api/analyze on the
+// Express backend; this file also carries the local mock that answers when
+// the backend cannot be reached, so the page always works offline. Both
+// return the same shape, so the UI cannot tell which one responded.
+// text stays null until PDF text extraction exists - the backend call is
+// wired and waiting for it.
+
+const API = import.meta.env?.VITE_API_URL || "http://localhost:4000";
 
 export const ALL_SKILLS = [
   "JavaScript", "TypeScript", "Python", "Java", "React", "Node.js",
@@ -14,8 +20,6 @@ export const TIERS = [
   { min: 0, label: "Weak match", summary: "Most searched-for skills are missing from this resume." },
 ];
 
-// Stable pseudo-random from the file name, so re-uploading the same file
-// gives the same score (how a real parser would behave).
 function hashCode(str) {
   let h = 0;
   for (let i = 0; i < str.length; i++) {
@@ -23,26 +27,41 @@ function hashCode(str) {
   }
   return Math.abs(h);
 }
-
-export function mockAnalysis(fileName) {
+// The local fallback, kept from the design mock: deterministic mock data keyed
+// on the file name, so the real backend and the mock return the same shape.
+function mockAnalysis(fileName) {
   const h = hashCode(fileName);
   const shuffled = [...ALL_SKILLS].sort((a, b) => {
     const ha = (h * 31 + a.length * 7 + a.charCodeAt(0)) | 0;
     const hb = (h * 31 + b.length * 7 + b.charCodeAt(0)) | 0;
     return ha - hb;
   });
-  const presentCount = 5 + (h % 9); // between 5 and 13 of the 18 skills
+  const presentCount = 5 + (h % 9);
   return {
+    fileName,
+    text: null,
     score: Math.round((presentCount / ALL_SKILLS.length) * 100),
     present: shuffled.slice(0, presentCount),
     missing: shuffled.slice(presentCount),
+    tier: TIERS.find((t) => t.min <= Math.round((presentCount / ALL_SKILLS.length) * 100)).label,
+    summary: TIERS.find((t) => t.min <= Math.round((presentCount / 18) * 100)).summary,
+    analyzedAt: new Date(),
   };
 }
-
-// Stands in for the API call. When the Express backend lands (the next line in
-// DECISION.md), this becomes a real fetch() to /api/analyze.
-export function simulateParse(fileName, delay = 1400) {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(mockAnalysis(fileName)), delay);
-  });
+// Try the real backend first, fall back to the mock. With no file name there
+// is nothing to show either way, so the request skips straight to the fallback.
+export async function analyzeResume(fileName, text) {
+  if (!fileName) return mockAnalysis("unknown.pdf");
+  try {
+    const res = await fetch(API + "/api/analyze", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fileName, text }),
+    });
+    if (!res.ok) throw new Error("API responded " + res.status);
+    return await res.json();
+  } catch (err) {
+    console.warn("API unavailable, using local mock:", err.message);
+    return mockAnalysis(fileName);
+  }
 }
