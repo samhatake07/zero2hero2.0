@@ -8,7 +8,7 @@ import Resume from "../models/Resume.js";
 
 const router = Router();
 
-router.post("/", validateAnalyze, analyze);
+router.post("/analyze", validateAnalyze, analyze);
 router.get("/analyses", async (req, res) => {
   try {
     const recent = await Resume.find().sort({ analyzedAt: -1 }).limit(20).lean();

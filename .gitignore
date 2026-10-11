@@ -1,5 +1,2 @@
 node_modules/
 dist/
-
-# env files carry credentials - never commit them
-.env

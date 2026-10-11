@@ -24,7 +24,14 @@ app.use("/api", analyzeRouter);
 // The API starts even if MongoDB is not up yet - /health reports the
 // connection state, and writes fail with a clear 500 until the DB answers.
 await connectDB();
-app.listen(PORT, () => console.log("resume parser API on http://localhost:" + PORT));
+
+// On Vercel the platform owns the socket and invokes the app exported from
+// backend/api/index.js; locally we listen as a normal server.
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => console.log("resume parser API on http://localhost:" + PORT));
+}
+
+export default app;
 
 for (const signal of ["SIGINT", "SIGTERM"]) {
   process.on(signal, async () => {
